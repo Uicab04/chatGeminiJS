@@ -1,0 +1,122 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Consulta a GEMINI</title>
+  <style>
+    /* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
+
+.input-group input[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.input-group input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.respuesta-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.respuesta-container p {
+  margin: 0;
+  color: #333;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Formulario de Consulta a GEMINI</h1>
+    <form id="formulario1" method="post" action="/consultar">
+      <div class="input-group">
+        <label for="consulta">Ingrese su consulta:</label>
+        <textarea id="consulta" name="consulta" rows="4" cols="50" placeholder="Escribe tu consulta aquí"></textarea>
+      </div>
+      <input type="submit" value="Consultar">
+      <div id="respuesta" class="respuesta-container"></div>
+    </form>
+  </div>
+
+  <script>
+    const formulario = document.getElementById("formulario1");
+    const respuestaContainer = document.getElementById("respuesta");
+
+    formulario.addEventListener("submit", async (evento) => {
+      evento.preventDefault(); // Evita que el formulario se envíe por defecto
+
+      const consulta = document.getElementById("consulta").value.trim();
+
+      try {
+        const respuesta = await fetch("/consultar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ consulta })
+        });
+
+        const data = await respuesta.text(); // Convertimos la respuesta a texto
+
+        // Mostramos la respuesta en el contenedor
+        respuestaContainer.innerHTML = `<p>${data}</p>`;
+      } catch (error) {
+        console.error('Error en la solicitud:', error);
+        respuestaContainer.innerHTML = "<p>Ocurrió un error al procesar la solicitud.</p>";
+      }
+    });
+  </script>
+</body>
+</html>
